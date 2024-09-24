@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -36,8 +37,39 @@ public class StockController {
 	@Autowired
 	StockService service;
 	
+	
+	static HashMap<String, String> url_map=new LinkedHashMap<String, String>();
+	
+	
+	
 	@Autowired
 	Stockrepo stockrepo;
+	
+	
+	@PostMapping("save-api-url")
+	public ResponseEntity<Object> saveurl() throws Exception{
+		
+		  HashMap<String, Set<String>> hm=  (HashMap<String, Set<String>>) getCombination().getBody();
+		  
+		  hm.forEach((k,v)->{
+			  
+			  
+			  v.forEach(e->{
+				  
+				String url=  service.searchapi(e);
+				  
+				  url_map.put(e, url);
+			  });
+		  }
+				  
+				  
+				  
+		);
+		  
+		  return ResponseEntity.ok(url_map);
+		  
+		           
+	}
 	
 	@GetMapping("/get-all-stock")
 	public ResponseEntity<Object> getall() throws IOException, InterruptedException{

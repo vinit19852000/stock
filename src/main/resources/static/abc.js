@@ -8,8 +8,10 @@ var per='';
 var ent='';
 var red='';
 
-var appurl='stock-r362.onrender.com'
-//'+appurl+'
+var appurl='https://stock-r362.onrender.com'
+//var appurl='http://localhost:8081'
+//'http://localhost:8081'
+//https://stock-r362.onrender.com
 var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
 
 
@@ -42,7 +44,7 @@ i++;
 
 
 function getdate(){
-	            const apiUrl = 'https://'+appurl+'/stock/date'; // Adjust URL as needed
+	            const apiUrl = appurl+'/stock/date'; // Adjust URL as needed
 
 
                 var mydate=document.getElementById('mydate');
@@ -74,7 +76,7 @@ function getdate(){
     spinner.classList.remove('hidden');
     resultContainer.innerHTML = '';
 
-            const apiUrl = 'https://'+appurl+'/stock/combination'; // Adjust URL as needed
+            const apiUrl = appurl+'/stock/combination'; // Adjust URL as needed
 
             fetch(apiUrl)
                 .then(response => {
@@ -165,7 +167,9 @@ function callme(){
 }
 
 function gotopage(stock){
-	fetch('https://'+appurl+'/stock/search?stock='+stock).then(response => {
+	
+	console.log("go to called");
+	fetch(appurl+'/stock/search?stock='+stock).then(response => {
             if (!response.ok) {
 				                 spinner.classList.add('hidden'); // Hide the spinner
                 resultContainer.innerHTML = 'No Result Found'; // Display error message
@@ -179,6 +183,8 @@ function gotopage(stock){
                     window.location.href=data;
         })
         .catch(error => {
+			
+			    console.log("error:"+error);
                  spinner.classList.add('hidden'); // Hide the spinner
                 resultContainer.innerHTML = 'No Result Found'; // Display error message
                 return Promise.reject('No Result Found'); // Stop further processing
@@ -194,7 +200,7 @@ function get() {
     spinner.classList.remove('hidden');
     resultContainer.innerHTML = '';
 
-    fetch('https://'+appurl+'/stock/map?key=' + key)
+    fetch(appurl+'/stock/map?key=' + key)
         .then(response => {
             if (!response.ok) {
                  spinner.classList.add('hidden'); // Hide the spinner
