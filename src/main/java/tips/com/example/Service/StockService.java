@@ -232,15 +232,10 @@ public class StockService {
 	            connection.setRequestProperty("accept", "application/json, text/plain, */*");
 	            connection.setRequestProperty("accept-language", "en-US,en;q=0.9");
 	            connection.setRequestProperty("accept-version", "8.14.0");
-	            connection.setRequestProperty("cookie", "_gcl_au=1.1.1124876117.1727095124; ..."); // Replace with actual cookie
-	            connection.setRequestProperty("origin", "https://www.tickertape.in");
+
+	         
 	            connection.setRequestProperty("priority", "u=1, i");
 	            connection.setRequestProperty("sec-ch-ua", "\"Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Google Chrome\";v=\"128\"");
-	            connection.setRequestProperty("sec-ch-ua-mobile", "?1");
-	            connection.setRequestProperty("sec-ch-ua-platform", "\"Android\"");
-	            connection.setRequestProperty("sec-fetch-dest", "empty");
-	            connection.setRequestProperty("sec-fetch-mode", "cors");
-	            connection.setRequestProperty("sec-fetch-site", "same-site");
 	            connection.setRequestProperty("user-agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36");
 
 	            // Connect and get response code
