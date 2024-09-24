@@ -40,7 +40,7 @@ i++;
 
 
 function getdate(){
-	            const apiUrl = 'http://localhost:8081/stock/date'; // Adjust URL as needed
+	            const apiUrl = 'http://stock-r362.onrender.com/stock/date'; // Adjust URL as needed
 
 
                 var mydate=document.getElementById('mydate');
@@ -72,7 +72,7 @@ function getdate(){
     spinner.classList.remove('hidden');
     resultContainer.innerHTML = '';
 
-            const apiUrl = 'http://localhost:8081/stock/combination'; // Adjust URL as needed
+            const apiUrl = 'http://stock-r362.onrender.com/stock/combination'; // Adjust URL as needed
 
             fetch(apiUrl)
                 .then(response => {
@@ -163,7 +163,7 @@ function callme(){
 }
 
 function gotopage(stock){
-	fetch('http://localhost:8081/stock/search?stock='+stock).then(response => {
+	fetch('http://stock-r362.onrender.com/stock/search?stock='+stock).then(response => {
             if (!response.ok) {
 				                 spinner.classList.add('hidden'); // Hide the spinner
                 resultContainer.innerHTML = 'No Result Found'; // Display error message
@@ -192,7 +192,7 @@ function get() {
     spinner.classList.remove('hidden');
     resultContainer.innerHTML = '';
 
-    fetch('http://localhost:8081/stock/map?key=' + key)
+    fetch('http://stock-r362.onrender.com/stock/map?key=' + key)
         .then(response => {
             if (!response.ok) {
                  spinner.classList.add('hidden'); // Hide the spinner
