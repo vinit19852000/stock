@@ -1,6 +1,7 @@
 package tips.com.example.Controller;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.transaction.Transactional;
 import tips.com.example.Entity.StockData;
 import tips.com.example.Object.Stock;
 import tips.com.example.Repo.Stockrepo;
@@ -47,6 +49,22 @@ public class StockController {
 		 stockData.setJsonData(json);
 
 		return ResponseEntity.ok(stockrepo.save(stockData));
+	}
+	
+
+    @Transactional
+	@GetMapping("/date")
+	public ResponseEntity<Object> getdate(){
+		StockData stockData= stockrepo.findTopByOrderByCreatedAtDesc();
+		
+		
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
+
+	        // Format the LocalDateTime
+	        String formattedDate = stockData.getCreatedAt().format(formatter);
+
+		 return ResponseEntity.ok(formattedDate);
+		
 	}
 	
 	

@@ -8,4 +8,5 @@ import tips.com.example.Entity.StockData;
 
 public interface Stockrepo extends JpaRepository<StockData, Long>{
 
+    StockData findTopByOrderByCreatedAtDesc();
 }
