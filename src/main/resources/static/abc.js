@@ -8,7 +8,7 @@ var per='';
 var ent='';
 var red='';
 
-var appurl='localhost:8081'
+var appurl='stock-r362.onrender.com'
 //'+appurl+'
 var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
 
