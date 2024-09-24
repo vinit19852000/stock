@@ -233,11 +233,7 @@ function get() {
 				}
 
                 // Make the div clickable
-                div.onclick = function() {
-                    alert('You clicked on: ' + item);
-                    gotopage(item);
-                    // You can perform any other action here, like navigation
-                };
+                
 
                 // Append the new div to the result container
                 resultContainer.appendChild(div);
