@@ -1,0 +1,76 @@
+<html>
+<head>
+<style>
+  .spinner {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto; /* Center the spinner */
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+
+</head>
+
+ <script src='abc.js'></script>
+ 
+ <body>
+ <br>
+ <br>
+ <div style="background-color: lightgreen;width: 100%;font-size: 25px;">
+ Performance:
+ <select style="font-size: 25px;" id='performance'>
+ <option>High</option>
+ <option>Avg</option>
+ <option>Low</option>
+ </select>
+ &nbsp;&nbsp; Valuation:
+ <select style="font-size: 25px;" id='valuation'>
+ <option>High</option>
+ <option>Avg</option>
+ <option>Low</option>
+ </select>
+  &nbsp;&nbsp;Growth:
+ <select style="font-size: 25px;" id='growth'>
+ <option>High</option>
+ <option>Avg</option>
+ <option>Low</option>
+ </select>
+  &nbsp;&nbsp;Profitibility:
+ <select style="font-size: 25px;" id='profitibility'>
+ <option>High</option>
+ <option>Avg</option>
+ <option>Low</option>
+ </select>
+  &nbsp;&nbsp;Entry point:
+ <select style="font-size: 25px;" id='entrypoint'>
+ <option>Good</option>
+ <option>Avg</option>
+ <option>Bad</option>
+ </select>
+  &nbsp;&nbsp;Red flags:
+ <select style="font-size: 25px;" id='redflags'>
+ <option>High</option>
+ <option>Avg</option>
+ <option>Low</option>
+ </select>
+ </div>
+ <br>
+ <br>
+ <button onclick="callme()">search</button>
+ <br><br>
+ <div id="spinner" class="spinner hidden"></div>
+ <div id='result'></div>
+ </body>
+</html>
