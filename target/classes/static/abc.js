@@ -42,7 +42,7 @@ i++;
 
 
 function getdate(){
-	            const apiUrl = 'http://'+appurl+'/stock/date'; // Adjust URL as needed
+	            const apiUrl = 'https://'+appurl+'/stock/date'; // Adjust URL as needed
 
 
                 var mydate=document.getElementById('mydate');
@@ -74,7 +74,7 @@ function getdate(){
     spinner.classList.remove('hidden');
     resultContainer.innerHTML = '';
 
-            const apiUrl = 'http://'+appurl+'/stock/combination'; // Adjust URL as needed
+            const apiUrl = 'https://'+appurl+'/stock/combination'; // Adjust URL as needed
 
             fetch(apiUrl)
                 .then(response => {
@@ -165,7 +165,7 @@ function callme(){
 }
 
 function gotopage(stock){
-	fetch('http://'+appurl+'/stock/search?stock='+stock).then(response => {
+	fetch('https://'+appurl+'/stock/search?stock='+stock).then(response => {
             if (!response.ok) {
 				                 spinner.classList.add('hidden'); // Hide the spinner
                 resultContainer.innerHTML = 'No Result Found'; // Display error message
@@ -194,7 +194,7 @@ function get() {
     spinner.classList.remove('hidden');
     resultContainer.innerHTML = '';
 
-    fetch('http://'+appurl+'/stock/map?key=' + key)
+    fetch('https://'+appurl+'/stock/map?key=' + key)
         .then(response => {
             if (!response.ok) {
                  spinner.classList.add('hidden'); // Hide the spinner
