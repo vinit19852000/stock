@@ -140,7 +140,7 @@ if (value) {
 
                 // Append the new div to the result container
                 resultContainer.appendChild(div);
-                resultContainer.appendChild('<br>');
+
             i++;
             });
 
