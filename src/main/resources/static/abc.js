@@ -134,11 +134,6 @@ if (value) {
 					                div.style.backgroundColor='white';
 				}
 
-                // Make the div clickable
-                div.onclick = function() {
-                    gotopage(item);
-                    // You can perform any other action here, like navigation
-                };
 
                 // Append the new div to the result container
                 resultContainer.appendChild(div);
