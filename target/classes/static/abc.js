@@ -187,8 +187,8 @@ if (value) {
             // Iterate through the list of data and create clickable divs
             value.forEach(item => {
 				
-                var div = document.createElement('div');
-                div.className = 'item'; // Add a class for styling
+                var div = document.createElement('div'+i);
+                div.className = 'item'+i; // Add a class for styling
                 div.innerText = i+'.'+item; // Set the text content to the item value
                 div.style.fontSize='25px';
                 
