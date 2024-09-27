@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,43 +47,26 @@ public class StockController {
 	Stockrepo stockrepo;
 	
 	
-	@PostMapping("save-api-url")
-	public ResponseEntity<Object> saveurl() throws Exception{
-		
-		  HashMap<String, Set<String>> hm=  (HashMap<String, Set<String>>) getCombination().getBody();
-		  
-		  hm.forEach((k,v)->{
-			  
-			  
-			  v.forEach(e->{
-				  
-				String url=  service.searchapi(e);
-				  
-				  url_map.put(e, url);
-			  });
-		  }
-				  
-				  
-				  
-		);
-		  
-		  return ResponseEntity.ok(url_map);
-		  
-		           
-	}
-	
-	@GetMapping("/get-all-stock")
-	public ResponseEntity<Object> getall() throws IOException, InterruptedException{
-		
-		
-		 String json=service.getScannedStock();
-		 
-		 StockData stockData=new StockData();
-		 stockData.setJsonData(json);
 
-		return ResponseEntity.ok(stockrepo.save(stockData));
+	
+	@PutMapping("/update-stockdata")
+	public ResponseEntity<Object> getall(@RequestParam String password) throws IOException, InterruptedException{
+		
+		
+		if(password.equalsIgnoreCase("vinit1985")) {
+			 String json=service.updateAndSaveLatestData();
+			 
+			 StockData stockData=new StockData();
+			 stockData.setJsonData(json);
+
+			return ResponseEntity.ok(stockrepo.save(stockData));
+		}
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("PASSWORD IS WRONG");
+
 	}
 	
+
 
     @Transactional
 	@GetMapping("/date")
@@ -109,7 +93,7 @@ public class StockController {
 		
 		String json=list.stream()
 	               .max(Comparator.comparing(StockData::getCreatedAt)).get().getJsonData().toString();
-		HashMap<String,Set<String>>  hmap=new HashMap<String, Set<String>>() ;
+		HashMap<String,Set<String>>  hmap=new LinkedHashMap<String, Set<String>>();
  
          StringTokenizer st=new StringTokenizer(json,",");
          
@@ -153,66 +137,6 @@ public class StockController {
 	
 
 	
-	@GetMapping("/map")
-	public ResponseEntity<Object> getletest(@RequestParam String key) throws Exception{
-		
-		
-		System.out.print("key:"+key);
-		
-		List<StockData> list=stockrepo.findAll();
-		
-		String json=list.stream()
-	               .max(Comparator.comparing(StockData::getCreatedAt)).get().getJsonData().toString();
-		HashMap<String,Set<String>>  hmap=new HashMap<String, Set<String>>() ;
- 
-         StringTokenizer st=new StringTokenizer(json,",");
-         
-
-         int i=1;
-         while(st.hasMoreTokens()) {
-        	 
-        	 
-        	 String data=st.nextToken();
-
-        	 String fullstring=data.replaceAll("\"", "").replaceAll("\\{", "");
-        	 
-        	 
-        	 String value=fullstring.split("=")[1];
-             String mykey=fullstring.split("=")[0];
-        	 
-        	 String array[]=value.trim().split("\\|");
-             
-
-             Set<String> set=new HashSet<String>(List.of(array));
-             
-             hmap.put(mykey.trim(),set);
-           
-         }
-         
-         System.out.print("no erorr.........................");
-         
-         
-         hmap.forEach((k,v)->{
-        	 
-        	 System.out.println(k);
-         });
-         
-         
-
-    	 System.out.println("\n");
-    	 System.out.println(key);
-         
-         if(!hmap.containsKey(key)) {
-        	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Result Found");
-        	 
-         }
-         
-         
-         return ResponseEntity.ok(hmap.get(key));
-         
-         
-	}
-	
 	
 	@DeleteMapping("/delete")
 	public void delete() {
@@ -227,25 +151,5 @@ public class StockController {
 		return ResponseEntity.ok(service.searchapi(stock));
 	}
 	
-	@PostMapping("/sample")
-	public ResponseEntity<Object> Post() throws IOException, InterruptedException{
-		
-		
-		StockData stockData=new StockData();
-		stockData.setJsonData("{1:2,3:4784,3:4}");
-		
-		
-		return ResponseEntity.ok(stockrepo.save(stockData));
-		
 
-		
-	}
-	
-	@GetMapping("/get")
-	public Object get() {
-		
-		
-		return  stockrepo.findAll();
-	}
-	
 }

@@ -1,58 +1,43 @@
 package tips.com.example.Service;
 
+
 import tips.com.example.Object.Stock;
 
-public class ThreadProcess implements Runnable{
+public class ThreadProcess implements Runnable {
 
-	int index;
-	int end;
-	
-	public ThreadProcess(int index,int end) {
-		this.index=index;
-		this.end=end;
-	}
-	
-	@Override
-	public void run() {
-		
- 	   
- 	   for(int i=index;i<=end;i++) {
- 		   
- 		   try {
- 			   Stock st=StockService.listStocks.get(i);
- 			   String result=StockService.FinalStockData(st);
- 			   
- 			
- 			   if(result.isEmpty()) {
- 				   
- 			   }else {
+    private final int startIndex;
+    private final int endIndex;
 
- 				   result="\""+result.substring(0,result.length()-1)+"\"";
- 				   
- 				   String name="\""+st.getName()+"\"";
- 				   
- 				   if(StockService.hmap.containsKey(result)) {
- 					  StockService.hmap.put(result, StockService.hmap.get(result)+"|"+name);
- 				   }else {
- 	 				  StockService.hmap.put(result, name);
- 				   }
+    public ThreadProcess(int startIndex, int endIndex) {
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+    }
 
- 			   }
- 			   synchronized (StockService.class) {
-				
- 				   StockService.scanStock.incrementAndGet();
-			}
- 			   
- 		   }catch(Exception e)
- 		   {
+    @Override
+    public void run() {
+        for (int i = startIndex; i <= endIndex; i++) {
+            try {
+                Stock stock = StockService.listStocks.get(i);
+                
+                String result = StockService.FinalStockData(stock);
 
- 			   synchronized (StockService.class) {
- 					
- 				   StockService.scanStock.incrementAndGet();
-			}
- 		   }
- 	   }
- 	   
-	}
+                if (!result.isEmpty()) {
+                    result = "\"" + result.substring(0, result.length() - 1) + "\"";
+                    String name = "\"" + stock.getName() + "\"";
 
+                    synchronized (StockService.hmap) {
+                        StockService.hmap.put(name,result);
+                    }
+                }
+
+                // Increment the stock scan counter
+
+            } catch (Exception e) {
+                // Log the exception (optional)
+                System.err.println("Error processing stock at index " + i + ": " + e.getMessage());
+                // Increment the stock scan counter even if there was an error
+                
+            }
+        }
+    }
 }
