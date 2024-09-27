@@ -10,7 +10,7 @@ var red='';
 
 var appurl='https://stock-r362.onrender.com'
 //var appurl='http://localhost:8081'
-//'http://localhost:8081'
+'http://localhost:8081'
 //https://stock-r362.onrender.com
 var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
 
@@ -81,6 +81,30 @@ let myresult = "Click to see stock with " +
         getdate();
     };
 
+
+function redirect(stock){
+	            const apiUrl = appurl+'/stock/goto?query='+stock; // Adjust URL as needed
+
+
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+
+                return Promise.reject('No Result Found'); // Stop further processing
+                    }
+                    return response.text(); // Parse the response as JSON
+                })
+                .then(data => {
+                    console.log('console:'+data);
+                   window.location.href=data;
+
+                })
+                .catch(error => {
+                     console.error(error);
+
+                });
+}
 
 function getdate(){
 	            const apiUrl = appurl+'/stock/date'; // Adjust URL as needed
@@ -167,6 +191,9 @@ if (value) {
                 div.className = 'item'; // Add a class for styling
                 div.innerText = i+'.'+item; // Set the text content to the item value
                 div.style.fontSize='25px';
+                
+                
+                
                 if(i%2==0){
 					                div.style.backgroundColor='#FFFDD0';
 				}else{
@@ -176,6 +203,14 @@ if (value) {
 
                 // Append the new div to the result container
                 resultContainer.appendChild(div);
+                
+                div.onclick=function goto(){
+	console.log('redirect start.....');
+
+            redirect(value);
+	console.log('redirect end.....');
+
+				}
 
             i++;
             });

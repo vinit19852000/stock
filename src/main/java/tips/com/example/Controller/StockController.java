@@ -12,6 +12,9 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -46,7 +49,34 @@ public class StockController {
 	@Autowired
 	Stockrepo stockrepo;
 	
-	
+	  @GetMapping("/goto")
+	    public String search(@RequestParam String query) {
+		  String url = "https://www.google.com/search?q=" + query+" tickertap&btnI=1";
+          
+	        try {
+	            // Create the Google search URL
+	            
+	            // Fetch the HTML page
+	            Document doc = Jsoup.connect(url).get();
+
+	            System.out.println("document:"+doc);
+	            
+	            // Extract the first <a> (anchor) element
+	            Element firstLink = doc.select("a").first(); // Select the first anchor element
+
+	            if (firstLink != null) {
+	                String resultUrl = firstLink.attr("href"); // Get the href attribute of the anchor
+	                
+	                   return resultUrl;
+	                // Return or process the URL
+	            } else {
+	                return url;
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+                return url;
+	        }
+	    }
 
 	
 	@PutMapping("/update-stockdata")
