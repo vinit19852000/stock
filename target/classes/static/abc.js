@@ -8,8 +8,8 @@ var per='';
 var ent='';
 var red='';
 
-var appurl='https://stock-r362.onrender.com'
-//var appurl='http://localhost:8081'
+//var appurl='https://stock-r362.onrender.com'
+var appurl='http://localhost:8081'
 //'http://localhost:8081'
 //https://stock-r362.onrender.com
 var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
@@ -21,22 +21,58 @@ var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
  const dataMap = new Map();
  
  
- function comb(){
-var resultContainer = document.getElementById('result');
-     resultContainer.innerHTML='';
-     
-     var result='';
-     var i=1;
-      dataMap.forEach((value, key) => {
-result += '<div style="font-size:25px; background-color:' + (i % 2 == 0 ? '#FFFDD0' : 'white') + '; margin-bottom: 10px;">' + i + ':' + key + '</div>';
-result=result+'<br>';
-i++;
-    });
-    
-    
-    resultContainer.innerHTML=result;
-	
+ function getColor(value,para) {
+	 
+	 if(para==='Risk'){
+	if (value === "High") return "red";
+    if (value === "Avg") return "orange";
+    if (value === "Low") return "green";
+	 }else{
+		
+	 
+    if (value === "High") return "green";
+    if (value === "Avg") return "orange";
+    if (value === "Low") return "red";
+    if (value === "Good") return "green";
+    if (value === "Bad") return "red";}
 }
+ function comb() {
+    var resultContainer = document.getElementById('result');
+    resultContainer.innerHTML = '';
+
+    var i = 1;
+    dataMap.forEach((value, id) => {
+        // Create a div element
+        
+        let a = id.split(":");
+
+let myresult = "Click to see stock with " +
+    '<span style="color:' + getColor(a[0]) + ';">' + a[0] + ' Performance</span>, ' +
+    '<span style="color:' + getColor(a[1]) + ';">' + a[1] + ' Valuation</span>, ' +
+    '<span style="color:' + getColor(a[2]) + ';">' + a[2] + ' Growth</span>, ' +
+    '<span style="color:' + getColor(a[3]) + ';">' + a[3] + ' Profitability</span>, ' +
+    '<span style="color:' + getColor(a[4]) + ';">' + a[4] + ' EntryPoint</span>, and ' +
+    '<span style="color:' + getColor(a[5],'Risk') + ';">' + a[5] + ' Risk</span>';
+    
+        var div = document.createElement('div');
+        div.id = id;
+        div.style = 'font-size:25px; background-color:' + (i % 2 == 0 ? '#FFFDD0' : 'white') + '; margin-bottom: 10px;';
+        div.innerHTML = i + ':' + myresult;
+
+        // Add the onclick event to call the filter function
+        div.onclick = function() {
+            key = id;  // Assuming 'key' is a global variable
+            filter();  // Call the filter function
+        };
+
+        // Append the div to the result container
+        resultContainer.appendChild(div);
+        resultContainer.appendChild(document.createElement('br'));
+
+        i++;
+    });
+}
+
   window.onload = function() {
         fetchCombinationData(); // Replace with your actual function name
         getdate();
@@ -58,7 +94,7 @@ function getdate(){
                 })
                 .then(data => {
                     
-                   mydate.innerHTML = '<div style="font-size:25px; background-color:red">' + data + '</div>';
+                   mydate.innerHTML = '<div style="font-size:25px">' + data + '</div>';
 
                 })
                 .catch(error => {
