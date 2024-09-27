@@ -23,11 +23,14 @@ var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
  
  function getColor(value,para) {
 	 
-	 if(para==='Risk'){
+	 if(para==='Risk'||para==='Val'){
 	if (value === "High") return "red";
     if (value === "Avg") return "orange";
     if (value === "Low") return "green";
-	 }else{
+	 }
+	 	
+	 
+	 else{
 		
 	 
     if (value === "High") return "green";
@@ -47,11 +50,11 @@ var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
         let a = id.split(":");
 
 let myresult = "Click to see stock with " +
-    '<span style="color:' + getColor(a[0]) + ';">' + a[0] + ' Performance</span>, ' +
-    '<span style="color:' + getColor(a[1]) + ';">' + a[1] + ' Valuation</span>, ' +
-    '<span style="color:' + getColor(a[2]) + ';">' + a[2] + ' Growth</span>, ' +
-    '<span style="color:' + getColor(a[3]) + ';">' + a[3] + ' Profitability</span>, ' +
-    '<span style="color:' + getColor(a[4]) + ';">' + a[4] + ' EntryPoint</span>, and ' +
+    '<span style="color:' + getColor(a[0],'') + ';">' + a[0] + ' Performance</span>, ' +
+    '<span style="color:' + getColor(a[1],'Val') + ';">' + a[1] + ' Valuation</span>, ' +
+    '<span style="color:' + getColor(a[2],'') + ';">' + a[2] + ' Growth</span>, ' +
+    '<span style="color:' + getColor(a[3],'') + ';">' + a[3] + ' Profitability</span>, ' +
+    '<span style="color:' + getColor(a[4],'') + ';">' + a[4] + ' EntryPoint</span>, and ' +
     '<span style="color:' + getColor(a[5],'Risk') + ';">' + a[5] + ' Risk</span>';
     
         var div = document.createElement('div');
