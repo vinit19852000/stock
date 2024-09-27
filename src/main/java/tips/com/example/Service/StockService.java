@@ -1,6 +1,7 @@
 package tips.com.example.Service;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,10 +17,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +33,7 @@ import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.core.util.Json;
@@ -37,12 +41,15 @@ import tips.com.example.Entity.StockData;
 import tips.com.example.Object.Stock;
 import tips.com.example.Repo.Stockrepo;
 
+
 @Service
 public class StockService {
 	
-	
+	static int myindex=1;
 	@Autowired
 	Stockrepo stockrepo;
+	
+
 	
 	static HashMap<String, String> hmap=new LinkedHashMap<String, String>();
     static List<Stock> listStocks=new ArrayList<Stock>();
@@ -91,7 +98,7 @@ public class StockService {
 	                in.close();
 	                
 	            } else {
-	                System.out.println("GET request failed: " + responseCode+" :"+stock.getName()+" :"+stock.getId());
+	                //System.out.println("GET request failed: " + responseCode+" :"+stock.getName()+" :"+stock.getId());
 		        	response.append("No Result");
 	            }
 
@@ -104,6 +111,12 @@ public class StockService {
 	        
 	}
 
+
+	public static void main(String[] args) throws IOException, InterruptedException {
+		
+			   
+	
+	}
 	public static List<Stock> filterStock() throws IOException, InterruptedException{
     	String result=listOfStock();
         
@@ -329,62 +342,141 @@ public class StockService {
      }
     
     
-  
+  public String updateAndSaveLatestData() throws IOException, InterruptedException {
+
+		StockService service=new  StockService();
+		HashMap<String,String> a= service.getScannedStock();
+		
+		
+		System.out.println("main output--------------------------");
+		System.out.println("total  leangth:"+a.size());
+		
+		
+		HashMap<String,String> b=new LinkedHashMap<String, String>();
+		int i=1;
+		for(Map.Entry<String,String> map:a.entrySet()) {
+			
+			 
+			if(map.getValue().split(":").length==6) {
+				
+				b.put(map.getKey(),map.getValue());
+				i++;
+			}
+
+		}
+		
+	   HashMap<String,String> sorted=  b.entrySet().stream().sorted( (aa,bb)->{
+	    	
+	    	    String my[]=  aa.getValue().split(":");
+	    	    int result=0;
+	    	    
+	    	    result=result+(my[0].equalsIgnoreCase("Low")?1:my[0].equalsIgnoreCase("High")?3:2);
+	    	    result=result+(my[1].equalsIgnoreCase("High")?1:my[1].equalsIgnoreCase("Low")?3:2);
+	    	    result=result+(my[2].equalsIgnoreCase("Low")?1:my[2].equalsIgnoreCase("High")?3:2);
+	    	    result=result+(my[3].equalsIgnoreCase("Low")?1:my[3].equalsIgnoreCase("High")?3:2);
+	    	    result=result+(my[4].equalsIgnoreCase("Good")?5:my[4].equalsIgnoreCase("Avg")?2:1);
+	    	    result=result+(my[5].equalsIgnoreCase("Low")?3:my[5].equalsIgnoreCase("High")?1:2);
+	    	    
+	    	      
+	    	    String my2[]=  bb.getValue().split(":");
+	    	    int result2=0;
+	    	    
+	    	    result2=result2+(my2[0].equalsIgnoreCase("Low")?1:my2[0].equalsIgnoreCase("High")?3:2);
+	    	    result2=result2+(my2[1].equalsIgnoreCase("High")?1:my2[1].equalsIgnoreCase("Low")?3:2);
+	    	    result2=result2+(my2[2].equalsIgnoreCase("Low")?1:my2[2].equalsIgnoreCase("High")?3:2);
+	    	    result2=result2+(my2[3].equalsIgnoreCase("Low")?1:my2[3].equalsIgnoreCase("High")?3:2);
+	    	    result2=result2+(my2[4].equalsIgnoreCase("Good")?5:my2[4].equalsIgnoreCase("Avg")?2:1);
+	    	    result2=result2+(my2[5].equalsIgnoreCase("Low")?3:my2[5].equalsIgnoreCase("High")?1:2);
+	    	    
+	    	   return  result<result2?1:result==result2?0:-1;
+	    	      
+	    }).collect(Collectors.toMap(
+	            Map.Entry::getKey,    // Key mapper
+	            Map.Entry::getValue,  // Value mapper
+	            (oldValue, newValue) -> oldValue,  // Merge function (for duplicates)
+	            LinkedHashMap::new    // Collect into LinkedHashMap
+	        ));
+	   
+	   
+
+	   
+	   
+	   HashMap<String,String> finalmap=new LinkedHashMap<String, String>();
+	   
+	   sorted.forEach((k,v)->{
+		   
+		   if(finalmap.containsKey(v)) {
+			   
+			   finalmap.put(v,finalmap.get(v)+"|"+k);
+		   }else {
+			   finalmap.put(v,k);
+		   }
+		   
+	   });
+	   
+	   finalmap.forEach((k,v)->{
+		   
+		   System.out.println(myindex+":"+k+":"+v);
+		   myindex++;
+	   });
+
+	   return finalmap.toString();
+  }
     
-    public  String  getScannedStock() throws IOException, InterruptedException {
+    public  HashMap<String, String>  getScannedStock() throws IOException, InterruptedException {
     	
     	   
 
-    	    listStocks=StockService.filterStock();
-    	   
-            
-    	    System.out.println("live stock size"+listStocks.size());
-    	    
-    	    int index=0;
-    	    int end=listStocks.size()-1;
-    	    
-    	    
-    	    int core=Runtime.getRuntime().availableProcessors();
-    	    
-    	    
-         
-    	     int check=end;
-    	     
+    	List<Stock> listofStocks = StockService.filterStock();
 
-    	     int least=0;
-    	     while(check>0) {
-    	    	 
-    	    	 if(check%core==0) {
-    	    		 least=check;
-    	    		 break;
-    	    	 }
-    	    	 check--;
-    	     }
-    	     
-    	     int newindex=0;
-    	     int newlast=least/core;
-    	     int remain=end-check;
-    	     
-    	     ExecutorService executorService=Executors.newFixedThreadPool(core+1);
-    	     for(int i=1;i<=core;i++) {
-    	    	 
-    	    	 executorService.execute(new ThreadProcess(newindex, newlast));
-    	    	 newindex=newindex+1;
-    	    	 newlast=newlast+(least/core);
-    	    	 
-    	     }
-    	     
-    	     executorService.execute(new ThreadProcess(newindex, end));
-    	     
-    	     
-    	     while(StockService.scanStock.get()!=end) {
-    	    	 
-    	    	 if(StockService.scanStock.get()%300==0) {
-    	    		 System.out.println("scanned"+StockService.scanStock.get());
-    	    	 }
-    	     }
-    	     
-                   return StockService.hmap.toString();
+    	listStocks=listofStocks;
+    	System.out.println("live stock size: " + listofStocks.size());
+
+    	int index = 0;
+    	int end = listofStocks.size() - 1;
+
+    	int core = Runtime.getRuntime().availableProcessors();
+    	int check = end;
+    	int least = 0;
+
+    	// Calculate the least divisible by core
+    	int checkTemp = end;
+    	while (checkTemp > 0) {
+    	    if (checkTemp % core == 0) {
+    	        least = checkTemp;
+    	        break;
+    	    }
+    	    checkTemp--;
+    	}
+
+    	int newIndex = 0;
+    	int newLast = least / core;
+    	int remain = end - check;
+
+    	// Create an ExecutorService
+    	ExecutorService executorService = Executors.newFixedThreadPool(core + 1);
+
+    	// Submit tasks to the executor
+    	for (int i = 1; i <= core; i++) {
+    	    executorService.execute(new ThreadProcess(newIndex, newLast));
+    	    newIndex++;
+    	    newLast += (least / core);
+    	}
+
+    	// Submit the remaining tasks
+    	executorService.execute(new ThreadProcess(newIndex, end));
+
+    	 executorService.shutdown();
+         // Wait for all tasks to complete
+         if (!executorService.awaitTermination(5, TimeUnit.MINUTES)) {
+             System.err.println("Tasks did not finish in the allotted time.");
+         }
+
+         // Now all tasks are complete
+         System.out.println("All tasks completed. Now we can run the main thread.");
+         
+         return StockService.hmap;
+    
     }
     
     
