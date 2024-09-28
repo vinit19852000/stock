@@ -78,6 +78,14 @@ public class StockController {
 	        }
 	    }
 
+	  
+	  @GetMapping("/list-of-stock")
+	  public ResponseEntity<Object> getall() throws IOException, InterruptedException{
+	    	List<Stock> listofStocks =  StockService.filterStock();
+	    	
+	    	return ResponseEntity.ok(listofStocks);
+
+	  }
 	
 	@PutMapping("/update-stockdata")
 	public ResponseEntity<Object> getall(@RequestParam String password) throws IOException, InterruptedException{
