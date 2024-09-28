@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,12 +34,17 @@ import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.v3.core.util.Json;
 import tips.com.example.Entity.StockData;
+import tips.com.example.Object.Info;
+import tips.com.example.Object.Response;
 import tips.com.example.Object.Stock;
+import tips.com.example.Object.StockInfo;
+import tips.com.example.Object.StockInformation;
 import tips.com.example.Repo.Stockrepo;
 
 
@@ -112,58 +118,69 @@ public class StockService {
 	}
 
 
+	
+	
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
-			   
+		System.out.println("filter----");
+		
+		checkingStock();
+	}
+	public static void checkingStock() throws IOException, InterruptedException{
+		String result=listOfStock();
+		
+          Response response=convert(result);
+
+         System.out.println("with ETF"+response.getData().getResults().size()+"\n"+" without ETF:"); 
+         
+         response.getData().getResults().stream().map( res->{
+        	 
+
+        		 Info info=res.getStock().getInfo();
+        		 info.setSector(Optional.ofNullable(info.getSector()).orElse(""));
+        		 res.getStock().setInfo(info);
+        		 return res;
+        	
+         }).toList();
+        System.out.println(response.getData().getResults().stream().filter(res->!res.getStock().getInfo().getSector().equalsIgnoreCase("ETF")).toList().size());
+        
+    	
+	}
 	
+	public static Response convert(String result) throws JsonMappingException, JsonProcessingException {
+		
+        ObjectMapper objectMapper=new ObjectMapper();
+        
+        return objectMapper.readValue(result, Response.class);
+        
+        
 	}
 	public static List<Stock> filterStock() throws IOException, InterruptedException{
     	String result=listOfStock();
-        
-    	
-    	    
-        
-        System.out.println(result);
-        Pattern pattern = Pattern.compile("\"sid\":\"[^\"]*\"");
-     
-         
-        HashMap<Integer, String> hm=new LinkedHashMap<Integer, String>();
-        Matcher mather=pattern.matcher(result);
-        int i=1;
-        while(mather.find()) {
-        	
-        	String id=mather.group();
-        	
-        	hm.put(i, id);
-        	i++;
-        }
-        
-        
-        Pattern pattern2 = Pattern.compile("\"name\":\"[^\"]*\"");
-        
-        
-        
-        Matcher mather2=pattern2.matcher(result);
-        int j=1;
-        while(mather2.find()) {
-        	
-        	String name=mather2.group();
-        	
-        	
-        	hm.put(j, hm.get(j)+","+name);
-        	j++;
-        }
-         return   hm.values().stream().collect(Collectors.toList()).stream().map(l->{
-            	String filter=	l.replaceAll("\"name\":","").replaceAll("\"sid\":", "").replaceAll("\"", "");
-            	
-             String a[]=	filter.split(",");
-             
-             Stock stock=new Stock();
-             stock.setId(a[0]);
-             stock.setName(a[1]);
-             
-             return stock;
-            }).collect(Collectors.toList());
+    
+        Response response=convert(result);
+
+       
+       response.getData().getResults().stream().map( res->{
+      	 
+
+      		 Info info=res.getStock().getInfo();
+      		 info.setSector(Optional.ofNullable(info.getSector()).orElse(""));
+      		 res.getStock().setInfo(info);
+      		 return res;
+      	
+       }).toList();
+      
+       List<StockInformation> filterResponse= response.getData().getResults().stream().filter(res->!res.getStock().getInfo().getSector().equalsIgnoreCase("ETF")).toList();
+       List<Stock> listofStock=filterResponse.stream().map( stockinfo->{
+    	   Stock stock=new Stock();
+    	   stock.setId(stockinfo.getSid());
+    	   stock.setName(stockinfo.getStock().getInfo().getName());
+    	   
+    	   return stock;
+       } ).toList();
+       
+      return listofStock;
 	}
 	
 	public static String gettickerURL(String response,String key) {
@@ -285,7 +302,7 @@ public class StockService {
                 "match":{},
                 "sortBy":"mrktCapf",
                 "sortOrder":-1,
-                "project":["subindustry","mrktCapf","lastPrice","apef"],
+                "project":[],
                 "offset":0,
                 "count":6000,
                 "sids":[]
@@ -356,6 +373,8 @@ public class StockService {
 		int i=1;
 		for(Map.Entry<String,String> map:a.entrySet()) {
 			
+			
+			System.out.println(map.getKey()+":"+map.getValue());
 			 
 			if(map.getValue().split(":").length==6) {
 				
@@ -414,12 +433,6 @@ public class StockService {
 		   
 	   });
 	   
-	   finalmap.forEach((k,v)->{
-		   
-		   System.out.println(myindex+":"+k+":"+v);
-		   myindex++;
-	   });
-
 	   return finalmap.toString();
   }
     
