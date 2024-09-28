@@ -8,10 +8,10 @@ var per='';
 var ent='';
 var red='';
 
-var appurl='https://stock-r362.onrender.com'
+//var appurl='https://stock-r362.onrender.com'
 //var appurl='http://localhost:8081'
 'http://localhost:8081'
-//https://stock-r362.onrender.com
+https://stock-r362.onrender.com
 var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
 
 
@@ -187,12 +187,13 @@ if (value) {
             // Iterate through the list of data and create clickable divs
             value.forEach(item => {
 				
-                var div = document.createElement('div'+i);
+                var div = document.createElement('div');
                 div.className = 'item'+i; // Add a class for styling
                 div.innerText = i+'.'+item; // Set the text content to the item value
                 div.style.fontSize='25px';
                 
-                
+                    div.style.marginBottom = '20px'; // Adds 10px space below each div
+
                 
                 if(i%2==0){
 					                div.style.backgroundColor='#FFFDD0';
@@ -203,11 +204,11 @@ if (value) {
 
                 // Append the new div to the result container
                 resultContainer.appendChild(div);
-                
+                resultContainer.appendChild(document.createElement('br'));
                 div.onclick=function goto(){
 	console.log('redirect start.....');
 
-            redirect(value);
+            redirect(item);
 	console.log('redirect end.....');
 
 				}
