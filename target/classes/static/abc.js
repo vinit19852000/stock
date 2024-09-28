@@ -8,10 +8,10 @@ var per='';
 var ent='';
 var red='';
 
-//var appurl='https://stock-r362.onrender.com'
+var appurl='https://stock-r362.onrender.com'
 //var appurl='http://localhost:8081'
-'http://localhost:8081'
-https://stock-r362.onrender.com
+//'http://localhost:8081'
+//https://stock-r362.onrender.com
 var key=per+':'+val+':'+gro+':'+pro+':'+ent+':'+red;
 
 
